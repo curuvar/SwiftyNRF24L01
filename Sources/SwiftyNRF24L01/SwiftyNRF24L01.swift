@@ -32,8 +32,9 @@
 // SOFTWARE.
 //
 
-
+import Foundation
 import SwiftyGPIO
+
 // =============================================================================
 //  NRF24L01
 // =============================================================================
@@ -71,6 +72,7 @@ public class NRF24L01
     }
   }
 
+
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
   //  Message
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -102,20 +104,32 @@ public class NRF24L01
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
   //  Command
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-
+  //
+  // - Note: Do not use the R_REGISTER and W_REGISTER commands with the
+  //         send and receive command functions as the register cannot
+  //         be specified.  Use the read and write register functions
+  //         instead
+  //
   public enum Command : UInt8
   {
-  case R_REGISTER         = 0x00 // 000A AAAA
-  case W_REGISTER         = 0x20 // 001A AAAA
-  case R_RX_PAYLOAD       = 0x61 // 0110 0001
-  case W_TX_PAYLOAD       = 0xA0 // 1010 0000
-  case FLUSH_TX           = 0xE1 // 1110 0001
-  case FLUSH_RX           = 0xE2 // 1110 0010
-  case REUSE_TX_PL        = 0xE3 // 1110 0011
-  case R_RX_PL_WID        = 0x60 // 0110 0000
-  case W_ACK_PAYLOAD      = 0xA8 // 1010 1PPP
-  case W_TX_PAYLOAD_NOACK = 0xB0 // 1011 0000
-  case NOP                = 0xFF // 1111 1111
+  //    Command             value    bits       Data Length
+  case R_REGISTER         = 0x00 // 000A AAAA     1 to  5
+  case W_REGISTER         = 0x20 // 001A AAAA     1 to  5
+  case R_RX_PAYLOAD       = 0x61 // 0110 0001     1 to 32
+  case W_TX_PAYLOAD       = 0xA0 // 1010 0000     1 to 32
+  case FLUSH_TX           = 0xE1 // 1110 0001      none
+  case FLUSH_RX           = 0xE2 // 1110 0010      none
+  case REUSE_TX_PL        = 0xE3 // 1110 0011      none
+  case ACTIVATE           = 0x50 // 0101 0000        1  (must be 0x73)
+  case R_RX_PL_WID        = 0x60 // 0110 0000        1
+  case W_ACK_PAYLOAD_0    = 0xA8 // 1010 1000     1 to 32
+  case W_ACK_PAYLOAD_1    = 0xA9 // 1010 1001     1 to 32
+  case W_ACK_PAYLOAD_2    = 0xAA // 1010 1010     1 to 32
+  case W_ACK_PAYLOAD_3    = 0xAB // 1010 1011     1 to 32
+  case W_ACK_PAYLOAD_4    = 0xAC // 1010 1100     1 to 32
+  case W_ACK_PAYLOAD_5    = 0xAD // 1010 1101     1 to 32
+  case W_TX_PAYLOAD_NOACK = 0xB0 // 1011 0000     1 to 32
+  case NOP                = 0xFF // 1111 1111      none
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -166,18 +180,18 @@ public class NRF24L01
   public let  PRIM_RX        : UInt8 = 0b0000_0001
 
   // --- SETUP_AW ---
-  public let  AW             : UInt8 = 0b0000_0001
+  public let  AW             : UInt8 = 0b0000_0011
 
   // --- SETUP_RETR ---
-  public let  ARD            : UInt8 = 0b0001_0000
-  public let  ARC            : UInt8 = 0b0000_0001
+  public let  ARD            : UInt8 = 0b1111_0000
+  public let  ARC            : UInt8 = 0b0000_1111
 
   // --- RF_SETUP ---
-  public let  CONT_WAVE      : UInt8 = 0b1000_0000
-  public let  RF_DR_LOW      : UInt8 = 0b0010_0000
   public let  PLL_LOCK       : UInt8 = 0b0001_0000
-  public let  RF_DR_HIGH     : UInt8 = 0b0000_1000
-  public let  RF_PWR         : UInt8 = 0b0000_0010
+  public let  RF_DR          : UInt8 = 0b0000_1000
+  public let  RF_PWR         : UInt8 = 0b0000_0110
+  public let  LNA_HCURR      : UInt8 = 0b0000_0001;
+
 
   // --- STATUS ---
   public let  RX_DR          : UInt8 = 0b0100_0000
@@ -187,8 +201,8 @@ public class NRF24L01
   public let  STATUS_TX_FUL  : UInt8 = 0b0000_0001
 
   // --- OBSERVE_TX ---
-  public let  PLOS_CNT       : UInt8 = 0b0001_0000
-  public let  ARC_CNT        : UInt8 = 0b0000_0001
+  public let  PLOS_CNT       : UInt8 = 0b1111_0000
+  public let  ARC_CNT        : UInt8 = 0b0000_1111
 
   // ---FIFO_STATUS ---
   public let  TX_REUSE       : UInt8 = 0b0100_0000
@@ -218,6 +232,23 @@ public class NRF24L01
   // ---------------------------------------------------------------------------
   //  initializer
   // ---------------------------------------------------------------------------
+  /// Initialize the radio chip with the following properties:
+  ///  - Enable CRC
+  ///  - Use 2 byte CRC
+  ///  - Power up to Standby-| mode
+  ///  - Auto acknowledge set on all pipes.
+  ///  - Dynamic payoad length on all pipes.
+  ///  - Disable all data pipes
+  ///
+  ///  If not change by the user the following default
+  ///  parameters are in effece.
+  ///
+  ///  - Use 5 byte address
+  ///  - Auto retransmit delay 250uS
+  ///  - Auto retransmit count 3
+  ///  - RF Channel 2
+  ///  - No payload with ACK
+
 
   public init( csn : GPIO, ce : GPIO, irq : GPIO )
   {
@@ -239,12 +270,36 @@ public class NRF24L01
 
     clearInterrupts()
 
+    // Activate extra features
+
+    send( command: .ACTIVATE, value: 0x73 )
+
     // Move radio to Standby-1 state (powered up)
 
     write( register: .CONFIG, value:  EN_CRC    // Enable CRC
                                     | CRCO      // Two byte CRC check
                                     | PWR_UP    // Chip is powered up
                                     | PRIM_RX ) // Chip is in receive mode
+
+    // Give a short delay to allow the radio chip to power up.
+
+    sleep( 1 )
+
+    // Set a default channel
+
+    write( register: .RF_CH, value: 0x02 );
+
+    // Set address width 5
+
+    write( register: .SETUP_AW, value: 0x03 );
+
+    // Set 4 retries 1mS appart.
+
+    write( register: .SETUP_RETR, value: 0x34 );
+
+    // Set default RF parameters -  Air data rate: 2Mbps  output: 0dBm
+
+    write( register: .RF_SETUP, value: 0x0F );
 
     // Enable auto acknowlegde on all pipes
 
@@ -258,10 +313,22 @@ public class NRF24L01
 
     write( register: .FEATURE, value: EN_DPL );
 
-    // Disable all receive addresses
+    // Not listening on any pipe.
 
     write( register: .EN_RXADDR, value: 0 );
 
+  }
+
+  // -------------------------------------------------------------------------
+  //  De-Initializers
+  // -------------------------------------------------------------------------
+
+  deinit
+  {
+    // Set the config back to its initial value.  We do this
+    // to power off the radio chip.
+
+    write( register: .CONFIG, value:  EN_CRC )  // Enable CRC
   }
 
   // ==== Functions to communicate with radio chip =============================
@@ -579,9 +646,14 @@ public class NRF24L01
   //  transmit
   // -----------------------------------------------------------------------------
   //  Start a transmission sending the message to the given address.
+  //
+  //  - Returns false if the length of the message exceeds 32 bytes.
 
-  public func transmit( address: Address, message: [UInt8] )
+  @discardableResult
+  public func transmit( address: Address, message: [UInt8] ) -> Bool
   {
+    guard message.count <= 32 else { return false }
+
     clearTransmitInterrupts()
 
     write( register: .TX_ADDR,    data: address.rawValue )
@@ -589,11 +661,17 @@ public class NRF24L01
 
     send( command: .W_TX_PAYLOAD, data: message )
 
-    let config = read( register: .CONFIG ) & ~PRIM_RX
+    let currentPipes = read( register: .EN_RXADDR ) | 1
+    write( register: .EN_RXADDR, value: currentPipes )
 
+    let config = read( register: .CONFIG ) & ~PRIM_RX
     write( register: .CONFIG, value: config )
 
     ce.value = 1
+    usleep( 20 )
+    ce.value = 0
+
+    return true
   }
 
   // -----------------------------------------------------------------------------
@@ -606,8 +684,6 @@ public class NRF24L01
 
   public func transmitStatus() -> TXStatus
   {
-    ce.value = 0
-
     send( command: .NOP )  // Update status
 
     let retval : TXStatus;
@@ -617,6 +693,9 @@ public class NRF24L01
     else                             { retval = .inactive }
 
     clearTransmitInterrupts()
+
+    let currentPipes = read( register: .EN_RXADDR ) & ~1
+    write( register: .EN_RXADDR, value: currentPipes )
 
     let config = read( register: .CONFIG ) | PRIM_RX
 

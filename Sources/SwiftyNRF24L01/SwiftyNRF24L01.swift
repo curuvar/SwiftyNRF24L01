@@ -39,16 +39,16 @@ import SwiftyGPIO
 // =============================================================================
 /// Support the nRF24L01 radio chip.
 
-class NRF24L01
+public class NRF24L01
 {
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
   //  Address
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
   /// This struct holds an end point address.
 
-  struct Address
+  public struct Address
   {
-    let rawValue : [UInt8]
+    public let rawValue : [UInt8]
 
     // -------------------------------------------------------------------------
     //  Initializers
@@ -85,17 +85,17 @@ class NRF24L01
   //  Message
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-  struct Message
+  public struct Message
   {
-    let pipe : Pipe
-    let data : [UInt8]
+    public let pipe : Pipe
+    public let data : [UInt8]
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
   //  Pipe
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-  enum Pipe : UInt8
+  public enum Pipe : UInt8
   {
   case p0 = 0, p1, p2, p3, p4, p5
 
@@ -107,13 +107,13 @@ class NRF24L01
   //  TXStatus
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-  enum TXStatus { case complete, timeout, inactive }
+  public enum TXStatus { case complete, timeout, inactive }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
   //  Command
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-  enum Command : UInt8
+  public enum Command : UInt8
   {
   case R_REGISTER         = 0x00 // 000A AAAA
   case W_REGISTER         = 0x20 // 001A AAAA
@@ -132,7 +132,7 @@ class NRF24L01
   //  Register
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-  enum Register : UInt8
+  public enum Register : UInt8
   {
   case CONFIG              = 0x00
   case EN_AA               = 0x01
@@ -167,28 +167,28 @@ class NRF24L01
   // ---------------------------------------------------------------------------
 
   // --- CONFIG ---
-  let  MASK_RX_DR     : UInt8 = 0b0100_0000
-  let  MASK_TX_DS     : UInt8 = 0b0010_0000
-  let  MASK_MAX_RT    : UInt8 = 0b0001_0000
-  let  EN_CRC         : UInt8 = 0b0000_1000
-  let  CRCO           : UInt8 = 0b0000_0100
-  let  PWR_UP         : UInt8 = 0b0000_0010
-  let  PRIM_RX        : UInt8 = 0b0000_0001
+  public let  MASK_RX_DR     : UInt8 = 0b0100_0000
+  public let  MASK_TX_DS     : UInt8 = 0b0010_0000
+  public let  MASK_MAX_RT    : UInt8 = 0b0001_0000
+  public let  EN_CRC         : UInt8 = 0b0000_1000
+  public let  CRCO           : UInt8 = 0b0000_0100
+  public let  PWR_UP         : UInt8 = 0b0000_0010
+  public let  PRIM_RX        : UInt8 = 0b0000_0001
 
   // --- SETUP_AW ---
-  let  AW             : UInt8 = 0b0000_0001
+  public let  AW             : UInt8 = 0b0000_0001
 
   // --- SETUP_RETR ---
-  let  ARD            : UInt8 = 0b0001_0000
-  let  ARC            : UInt8 = 0b0000_0001
+  public let  ARD            : UInt8 = 0b0001_0000
+  public let  ARC            : UInt8 = 0b0000_0001
 
 
   // --- RF_SETUP ---
-  let  CONT_WAVE      : UInt8 = 0b1000_0000
-  let  RF_DR_LOW      : UInt8 = 0b0010_0000
-  let  PLL_LOCK       : UInt8 = 0b0001_0000
-  let  RF_DR_HIGH     : UInt8 = 0b0000_1000
-  let  RF_PWR         : UInt8 = 0b0000_0010
+  public let  CONT_WAVE      : UInt8 = 0b1000_0000
+  public let  RF_DR_LOW      : UInt8 = 0b0010_0000
+  public let  PLL_LOCK       : UInt8 = 0b0001_0000
+  public let  RF_DR_HIGH     : UInt8 = 0b0000_1000
+  public let  RF_PWR         : UInt8 = 0b0000_0010
 
   // --- STATUS ---
   let  RX_DR          : UInt8 = 0b0100_0000
@@ -198,39 +198,39 @@ class NRF24L01
   let  STATUS_TX_FUL  : UInt8 = 0b0000_0001
 
   // --- OBSERVE_TX ---
-  let  PLOS_CNT       : UInt8 = 0b0001_0000
-  let  ARC_CNT        : UInt8 = 0b0000_0001
+  public let  PLOS_CNT       : UInt8 = 0b0001_0000
+  public let  ARC_CNT        : UInt8 = 0b0000_0001
 
   // ---FIFO_STATUS ---
-  let  TX_REUSE       : UInt8 = 0b0100_0000
-  let  FIFO_TX_FULL   : UInt8 = 0b0010_0000
-  let  TX_EMPTY       : UInt8 = 0b0001_0000
-  let  RX_FULL        : UInt8 = 0b0000_0010
-  let  RX_EMPTY       : UInt8 = 0b0000_0001
+  public let  TX_REUSE       : UInt8 = 0b0100_0000
+  public let  FIFO_TX_FULL   : UInt8 = 0b0010_0000
+  public let  TX_EMPTY       : UInt8 = 0b0001_0000
+  public let  RX_FULL        : UInt8 = 0b0000_0010
+  public let  RX_EMPTY       : UInt8 = 0b0000_0001
 
   // --- FEATURE ---
-  let  EN_DPL         : UInt8 = 0b0000_0100
-  let  EN_ACK_PAY     : UInt8 = 0b0000_0010
-  let  EN_DYN_ACK     : UInt8 = 0b0000_0001
+  public let  EN_DPL         : UInt8 = 0b0000_0100
+  public let  EN_ACK_PAY     : UInt8 = 0b0000_0010
+  public let  EN_DYN_ACK     : UInt8 = 0b0000_0001
 
 
   // ---------------------------------------------------------------------------
   //  properties
   // ---------------------------------------------------------------------------
 
-  var status : UInt8 = 0
+  public var status : UInt8 = 0
 
-  let csn    : GPIO // Slave Select
-  let ce     : GPIO // Chip Enable
-  let irq    : GPIO // Interrupt Request
+  public let csn    : GPIO // Slave Select
+  public let ce     : GPIO // Chip Enable
+  public let irq    : GPIO // Interrupt Request
 
-  let spi    = SysFSSPI( spiId: "0.1" )
+  public let spi    = SysFSSPI( spiId: "0.1" )
 
   // ---------------------------------------------------------------------------
   //  initializer
   // ---------------------------------------------------------------------------
 
-  init( csn : GPIO, ce : GPIO, irq : GPIO )
+  public init( csn : GPIO, ce : GPIO, irq : GPIO )
   {
     self.csn = csn
     self.ce  = ce
@@ -290,7 +290,7 @@ class NRF24L01
   /// - Returns: The status byte received when the command byte is sent.
 
   @discardableResult
-  func send( command : Command ) -> UInt8
+  public func send( command : Command ) -> UInt8
   {
     csn.value = 0
 
@@ -317,7 +317,7 @@ class NRF24L01
 
 
   @discardableResult
-  func send( command : Command, value: UInt8 ) -> UInt8
+  public func send( command : Command, value: UInt8 ) -> UInt8
   {
     csn.value = 0
 
@@ -343,7 +343,7 @@ class NRF24L01
   /// - Returns: The status byte received when the command byte is sent.
 
   @discardableResult
-  func send( command : Command, data: [UInt8] ) -> UInt8
+  public func send( command : Command, data: [UInt8] ) -> UInt8
   {
     csn.value = 0
 
@@ -369,7 +369,7 @@ class NRF24L01
   ///
   /// - Returns: The data byte received from the radio chip.
 
-  func receive( command : Command ) -> UInt8
+  public func receive( command : Command ) -> UInt8
   {
     csn.value = 0
 
@@ -396,7 +396,7 @@ class NRF24L01
   ///
   /// - Returns: The data received from the radio chip.
 
-  func receive( command : Command, length: Int ) -> [UInt8]
+  public func receive( command : Command, length: Int ) -> [UInt8]
   {
     csn.value = 0
 
@@ -424,7 +424,7 @@ class NRF24L01
   /// - Returns: The status byte received when the first byte is sent.
 
   @discardableResult
-  func write( register : Register, value: UInt8 ) -> UInt8
+  public func write( register : Register, value: UInt8 ) -> UInt8
   {
     csn.value = 0
 
@@ -452,7 +452,7 @@ class NRF24L01
   /// - Returns: The status byte received when the first byte is sent.
 
   @discardableResult
-  func write( register : Register, data: [UInt8] ) -> UInt8
+  public func write( register : Register, data: [UInt8] ) -> UInt8
   {
     csn.value = 0
 
@@ -479,7 +479,7 @@ class NRF24L01
   ///
   /// - Returns: The data byte read from the selected register.
 
-  func read( register : Register ) -> UInt8
+  public func read( register : Register ) -> UInt8
   {
     csn.value = 0
 
@@ -507,7 +507,7 @@ class NRF24L01
   ///
   /// - Returns: The data read from the selected register.
 
-  func read( register : Register, length : Int ) -> [UInt8]
+  public func read( register : Register, length : Int ) -> [UInt8]
   {
     csn.value = 0
 
@@ -531,7 +531,7 @@ class NRF24L01
   /// - Parameter pipe: the pipe to receive on
   /// - Parameter address: the address to listen to
 
-  func listen( pipe : Pipe, address : Address )
+  public func listen( pipe : Pipe, address : Address )
   {
     write( register: pipe.rxAddrReg, data: address.rawValue )
 
@@ -551,7 +551,7 @@ class NRF24L01
   /// As a side effect the class's status property is update with
   /// the status value read from the radio chip.
 
-  var haveReceivedData : Bool
+  public var haveReceivedData : Bool
   {
     ce.value = 0
 
@@ -569,7 +569,7 @@ class NRF24L01
   ///            over which the data was received; or nil if no data is
   ///            available.
 
-  func receivedMessage() -> Message?
+  public func receivedMessage() -> Message?
   {
     guard haveReceivedData else { return nil }
 
@@ -591,7 +591,7 @@ class NRF24L01
   // -----------------------------------------------------------------------------
   //  Start a transmission sending the message to the given address.
 
-  func transmit( address: Address, message: [UInt8] )
+  public func transmit( address: Address, message: [UInt8] )
   {
     clearTransmitInterrupts()
 
@@ -615,7 +615,7 @@ class NRF24L01
   //
   //  It returns the status of the transmission.
 
-  func transmitStatus() -> TXStatus
+  public func transmitStatus() -> TXStatus
   {
     ce.value = 0
 
@@ -641,7 +641,7 @@ class NRF24L01
   // -----------------------------------------------------------------------------
   //  This clears any pending transmission for the transmit buffer.
 
-  func flushTransmitBuffer()
+  public func flushTransmitBuffer()
   {
     send( command: .FLUSH_TX )
   }
@@ -652,7 +652,7 @@ class NRF24L01
   //  This retrys the last transmission if the transmitStatus function indicated
   //  a timeout or failed transmission.
 
-  func retryTransmit()
+  public func retryTransmit()
   {
     // XXX not sure it works this way, never tested
 
@@ -668,7 +668,7 @@ class NRF24L01
   // -----------------------------------------------------------------------------
   //  This clears all interrupt flags.
 
-  func clearInterrupts()
+  public func clearInterrupts()
   {
     write( register: .STATUS, value: RX_DR | TX_DS | MAX_RT )
   }
@@ -678,7 +678,7 @@ class NRF24L01
   // -----------------------------------------------------------------------------
   //  This clears all transmit interrupt flags.
 
-  func clearTransmitInterrupts()
+  public func clearTransmitInterrupts()
   {
     write( register: .STATUS, value: TX_DS | MAX_RT )
   }
@@ -688,7 +688,7 @@ class NRF24L01
   // -----------------------------------------------------------------------------
   //  This clears the receive interrupt flag.
 
-  func clearReceiveInterrupt()
+  public func clearReceiveInterrupt()
   {
     write( register: .STATUS, value: RX_DR )
   }

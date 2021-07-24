@@ -55,7 +55,7 @@ public class NRF24L01
     // -------------------------------------------------------------------------
     /// Create an Address based on five data bytes.
 
-    init( _ a0 : UInt8, _ a1 : UInt8, _ a2 : UInt8, _ a3 : UInt8, _ a4 : UInt8 )
+    public init( _ a0 : UInt8, _ a1 : UInt8, _ a2 : UInt8, _ a3 : UInt8, _ a4 : UInt8 )
     {
       rawValue = [ a0, a1, a2, a3, a4 ]
     }
@@ -65,7 +65,7 @@ public class NRF24L01
     // -------------------------------------------------------------------------
     /// Create an Address based on one data byte.
 
-    init( _ a0 : UInt8 )
+    public init( _ a0 : UInt8 )
     {
       rawValue = [ a0 ]
     }
@@ -73,7 +73,7 @@ public class NRF24L01
     // -------------------------------------------------------------------------
     /// Create an Address based on an array of data bytes.
 
-    init?( rawValue: [UInt8] )
+    public init?( rawValue: [UInt8] )
     {
       guard rawValue.count == 5 else { return nil }
 
@@ -99,8 +99,8 @@ public class NRF24L01
   {
   case p0 = 0, p1, p2, p3, p4, p5
 
-    var rxAddrReg : Register { Register( rawValue: self.rawValue + 0x0A )! }
-    var rxPwReg   : Register { Register( rawValue: self.rawValue + 0x11 )! }
+    public var rxAddrReg : Register { Register( rawValue: self.rawValue + 0x0A )! }
+    public var rxPwReg   : Register { Register( rawValue: self.rawValue + 0x11 )! }
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-

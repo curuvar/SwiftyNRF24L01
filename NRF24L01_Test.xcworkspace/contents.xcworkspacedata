@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:../../../../../craig&apos;s carnepie home/nRF24L01_test/README.md">
+   </FileRef>
+   <FileRef
+      location = "group:../../../../../craig&apos;s carnepie home/nRF24L01_test/Package.swift">
+   </FileRef>
+   <FileRef
+      location = "group:../../../../../craig&apos;s carnepie home/nRF24L01_test/Sources">
+   </FileRef>
+   <FileRef
+      location = "group:../../../../../craig&apos;s carnepie home/nRF24L01_test/Tests">
+   </FileRef>
+</Workspace>

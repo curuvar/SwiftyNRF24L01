@@ -4,6 +4,6 @@ import SwiftyNRF24L01Tests
 
 var tests = [XCTestCaseEntry]()
 
-tests += nRF24L01Tests.allTests()
+tests += SwiftyNRF24L01Tests.allTests()
 
 XCTMain( tests )

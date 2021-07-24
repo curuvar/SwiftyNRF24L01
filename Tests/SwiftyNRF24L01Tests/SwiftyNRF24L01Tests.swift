@@ -16,6 +16,17 @@ final class SwiftyNRF24L01Tests: XCTestCase
     XCTAssertEqual( radio.send( command: .NOP ),     0b0000_1110 )
 
     XCTAssertEqual( radio.read( register: .CONFIG ), 0b0000_1111 )
+
+    gpios[.P5]?.onRaising
+          {
+            pin in print( "onRaising triggered for \(pin) " )
+          }
+
+    gpios[.P5]?.onFalling
+          { pin in
+            print( "onFalling triggered for \(pin) " )
+          }
+
   }
 
   func radioReceiveSetup()
@@ -64,13 +75,15 @@ final class SwiftyNRF24L01Tests: XCTestCase
     radio.clearTransmitInterrupts()
 
     XCTAssertEqual( radio.transmitStatus(), NRF24L01.TXStatus.inactive )
+
+    sleep( 10 )
   }
 
   static var allTests =
     [
       ( "radioInit", radioInit ),
-      ( "radioReceiveSetup", radioReceiveSetup ),
       ( "radioTransmitTest", radioTransmitTest ),
+      ( "radioReceiveSetup", radioReceiveSetup ),
     ]
 }
 

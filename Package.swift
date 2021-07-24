@@ -15,7 +15,7 @@ let package = Package(
     [
       // Dependencies declare other packages that this package depends on.
       // .package(url: /* package url */, from: "1.0.0"),
-      .package( url: "https://github.com/uraimo/SwiftyGPIO.git", from: "1.0.0" )
+      .package( url: "https://github.com/curuvar/SwiftyGPIO.git", from: "1.0.0" )
     ],
     targets:
     [

@@ -61,6 +61,16 @@ class NRF24L01
     }
 
     // -------------------------------------------------------------------------
+    //  Initializers
+    // -------------------------------------------------------------------------
+    /// Create an Address based on one data byte.
+
+    init( _ a0 : UInt8 )
+    {
+      rawValue = [ a0 ]
+    }
+
+    // -------------------------------------------------------------------------
     /// Create an Address based on an array of data bytes.
 
     init?( rawValue: [UInt8] )
@@ -259,9 +269,9 @@ class NRF24L01
 
     write( register: .FEATURE, value: EN_DPL );
 
-    // Disable all receive addresses
+    // Disable all receive addresses except p0
 
-    write( register: .EN_RXADDR, value: 0 );
+    write( register: .EN_RXADDR, value: 1 );
 
   }
 
